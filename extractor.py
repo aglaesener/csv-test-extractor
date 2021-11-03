@@ -1,5 +1,5 @@
 import json, time, base64
-import pandas as pd
+import csv
 from flask import *
 from io import StringIO
 
@@ -24,10 +24,10 @@ def extract():
     fileBase64      = request.json["fileBase64"]
 
     DATA = StringIO(base64.b64decode(fileBase64).decode("utf-8"))
-    table = pd.read_csv(DATA, sep=";")
+    table = csv.DictReader(DATA, delimiter=";")
     extract_data = []
-
-    for index, row in table.iterrows():
+    
+    for row in table:
         extract_data.append({
             'ref': row['ref'],
             'name': row['name'],
@@ -46,4 +46,4 @@ def extract():
     )
 
 if __name__ == '__main__':
-    app.run(port=7777)
+    app.run(host="0.0.0.0", port=7777)
